@@ -14,7 +14,7 @@ Click green button "Use this template" 
 
 ### Usage
 To do Use generator to render:
-README.md
-index.js
-serverless.yml
+- README.md
+- index.js
+- serverless.yml
 
