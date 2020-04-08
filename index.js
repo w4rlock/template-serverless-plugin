@@ -1,110 +1,73 @@
-const _ = require('lodash');
-const path = require('path');
 const BaseServerlessPlugin = require('base-serverless-plugin');
-const slsIamFnRolePlugin = require('serverless-iam-roles-per-function');
-const utils = require('./lib/utils.js');
 
-const LOG_PREFFIX = '[ServerlessDatadogPlugin] - ';
+const LOG_PREFFIX = '[ServerlessPlugin] -';
+const USR_CONF = 'pluginConfig';
 
-const DD_FN_ID = 'DatadogLogForward';
-const DD_FN_YML_PATH = 'resources/datadog.yml.tpl';
-const DD_USR_CONF = 'datadogLogForward';
-const DD_ZIP_PATH = 'resources/aws-dd-forwarder-3.5.0.zip';
-
-class ServerlessDatadogPlugin extends BaseServerlessPlugin {
+class ServerlessPlugin extends BaseServerlessPlugin {
   /**
-   * Default serverless constructor
+   * Default Constructor
    *
-   * @param {object} serverless serverless instance
+   * @param {object} serverless the serverless instance
    * @param {object} options command line arguments
    */
   constructor(serverless, options) {
-    super(serverless, options, LOG_PREFFIX, DD_USR_CONF);
-    this.pluginPath = __dirname;
-
-    if (this.isPluginDisabled()) {
-      this.log('plugin disabled');
-      return;
-    }
+    super(serverless, options, LOG_PREFFIX, USR_CONF);
 
     this.hooks = {
-      'after:package:initialize': this.injectResources.bind(this),
+      'after:deploy:deploy': this.dispatchAction.bind(this, this.deploy),
+      'after:info:info': this.dispatchAction.bind(this, this.info),
+      'before:remove:remove': this.dispatchAction.bind(this, this.remove),
     };
-
-    this.serverless.pluginManager.addPlugin(slsIamFnRolePlugin);
   }
 
   /**
-   * Load user config rendered
+   * Action Wrapper check plugin condition before perform action
    *
+   * @param {function} funAction serverless plugin action
    */
-  loadUserConfig() {
-    this.cfg = {};
-    this.cfg.apiKey = this.getConf(`${DD_USR_CONF}.apiKey`);
-    this.cfg.bucket = this.getConf(`${DD_USR_CONF}.bucket`);
-    this.cfg.functionName = this.getConf(`${DD_USR_CONF}.functionName`);
-    this.cfg.extendsFn = this.getConf(`${DD_USR_CONF}.extendsFn`, false, {});
-  }
-
-  /**
-   * Is necessary inject resources before package initialize.. to render
-   * cloud formation
-   *
-   */
-  injectResources() {
-    this.prepareFunction();
-  }
-
-  /**
-   * Inject datadog template function in serverless functions
-   * this function allow override
-   * @returns {object} datadog function
-   *
-   */
-  prepareFunction() {
-    // call there to get resolved serverless variables
-    this.loadUserConfig();
-    const datadogResource = this.getTemplateObject(DD_FN_YML_PATH, this.cfg);
-    const fnLogForward = _.get(datadogResource, `functions.${DD_FN_ID}`);
-
-    if (_.isEmpty(fnLogForward)) {
-      throw new Error(
-        `template "${DD_FN_YML_PATH}" should has a "${DD_FN_ID}" tag`
-      );
+  async dispatchAction(funAction, varResolver = undefined) {
+    if (this.isPluginDisabled()) {
+      this.log('warning: plugin is disabled');
+      return '';
     }
 
-    this.updatePackageArtifact(fnLogForward);
-
-    // merge base function with user function
-    _.merge(fnLogForward, this.cfg.extendsFn);
-    _.merge(this.serverless.service, datadogResource);
+    await this.initialize();
+    return funAction.call(this, varResolver);
   }
 
   /**
-   * Update artifact zip with python lambda handler code
+   * Load user config
    *
-   * @param {object} yml function object
    */
-  updatePackageArtifact(fn) {
-    const datadogLambdaZip = path.join(this.pluginPath, DD_ZIP_PATH);
-    _.set(fn, 'package.artifact', datadogLambdaZip);
+  loadConfig() {
+    this.cfg = {};
+    this.cfg.prop = this.getConf('prop', false, 'default_value');
+    this.cfg.requiredProp = this.getConf('prop', true);
   }
 
   /**
-   * Render yml handlebar template
+   * Deploy
    *
-   * @param {string} filePath relative path to template
-   * @param {object} data data source to render template
-   * @returns {object} obj rendered
    */
-  getTemplateObject(filePath, data) {
-    const fileAbsPath = path.resolve(this.pluginPath, filePath);
-    const fileContent = utils.readFile(fileAbsPath);
-    const template = utils.renderTemplate(fileContent, data);
-    const ymlContent = utils.yamlLoad(template);
+  async deploy() {
+    this.log('Deploy...');
+  }
 
-    return ymlContent;
+  /**
+   * Info
+   *
+   */
+  async info() {
+    this.log('Info...');
+  }
+
+  /**
+   * Remove
+   *
+   */
+  async remove() {
+    this.log('Removing...');
   }
 }
 
-module.exports = ServerlessDatadogPlugin;
+module.exports = ServerlessPlugin;

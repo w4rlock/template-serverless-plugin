@@ -26,7 +26,11 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "base-serverless-plugin": "0.1.1",
+    "lodash": "^4.17.15",
+    "rm": "^0.1.8"
+  },
   "devDependencies": {
     "@commitlint/config-conventional": "8.3.4",
     "babel-eslint": "10.1.0",
