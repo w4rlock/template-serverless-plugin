@@ -16,7 +16,7 @@ class ServerlessPlugin extends BaseServerlessPlugin {
     this.hooks = {
       'after:deploy:deploy': this.dispatchAction.bind(this, this.deploy),
       'after:info:info': this.dispatchAction.bind(this, this.info),
-      'before:remove:remove': this.dispatchAction.bind(this, this.remove),
+      'after:remove:remove': this.dispatchAction.bind(this, this.remove),
     };
   }
 
@@ -31,7 +31,7 @@ class ServerlessPlugin extends BaseServerlessPlugin {
       return '';
     }
 
-    await this.initialize();
+    this.loadConfig();
     return funAction.call(this, varResolver);
   }
 
