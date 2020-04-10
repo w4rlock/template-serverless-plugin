@@ -5,7 +5,7 @@
 
 ### Installation
 ```bash
-git clone https://github.com/w4rlock/base-es6-template.git
+git clone https://github.com/w4rlock/template-base-serverless-plugin.git
 
 Or
 
