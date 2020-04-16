@@ -1,6 +1,6 @@
 {
   "name": "template-base-serverless-plugin",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Serverless plugin",
   "keywords": [
     "Serverless"

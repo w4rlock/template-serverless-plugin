@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.1](https://github.com/w4rlock/template-base-serverless-plugin/compare/0.2.0...0.2.1) (2020-04-16)
+
+
+### Bug Fixes
+
+* version ([1f26147](https://github.com/w4rlock/template-base-serverless-plugin/commit/1f2614749d2126f7143e06c313efdb7c530324fa))
+
 ## [0.2.0](https://github.com/w4rlock/template-base-serverless-plugin/compare/0.1.0...0.2.0) (2020-04-09)
 
 
