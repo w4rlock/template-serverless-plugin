@@ -41,8 +41,8 @@ class ServerlessPlugin extends BaseServerlessPlugin {
    */
   loadConfig() {
     this.cfg = {};
-    this.cfg.prop = this.getConf('prop', false, 'default_value');
-    this.cfg.requiredProp = this.getConf('prop', true);
+    this.cfg.prop = this.getConf('prop', 'default_value');
+    this.cfg.requiredProp = this.getConf('prop');
   }
 
   /**
