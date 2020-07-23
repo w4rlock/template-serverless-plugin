@@ -15,7 +15,7 @@
     "prettier:fix": "prettier \"**/*.{js,jsx,css,json}\" --write",
     "format": "npm run prettier -- --write",
     "validate": "npm run prettier -- --list-different && npm run lint",
-    "release": "standard-version -t ''",
+    "release": "standard-version -t 'release-'",
     "release:major": "npm run release -- --release-as major",
     "release:minor": "npm run release -- --release-as minor",
     "release:patch": "npm run release -- --release-as patch",
